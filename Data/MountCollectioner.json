@@ -4,5 +4,6 @@
   "Punchline": "Plugin for track collected mounts",
   "Description": "Plugin for track collected mounts",
   "InternalName": "MountCollectioner",
+  "RepoUrl": "https://github.com/Samuelkaa/MountCollectioner",
   "ApplicableVersion": "any"
 }

@@ -9,6 +9,10 @@ namespace MountCollectioner
     {
         public int Version { get; set; } = 1;
 
+        public bool hideCollectedMounts = false;
+
+        public string CharacterId { get; set; } = String.Empty;
+
         [NonSerialized]
         private DalamudPluginInterface? pluginInterface;
 
