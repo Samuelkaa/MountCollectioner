@@ -29,7 +29,6 @@
     <Content Include="..\Data\MountCollectioner.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\Data\Icons\Argos.png" Link="Icons\Argos.png" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="..\Data\Icons\Y.png" Link="Icons\Y.png" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="..\Data\Icons\N.png" Link="Icons\N.png" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>

@@ -1,10 +1,12 @@
 {
   "Author": "Samuelka",
   "Name": "Mount Collectioner",
-  "Punchline": "Plugin for track collected mounts",
-  "Description": "Plugin for track collected mounts",
   "InternalName": "MountCollectioner",
-  "RepoUrl": "https://github.com/Samuelkaa/MountCollectioner",
   "AssemblyVersion": "1.0.0.0",
-  "ApplicableVersion": "any"
+  "ApplicableVersion": "any",
+  "RepoUrl": "https://github.com/Samuelkaa/MountCollectioner",
+  "DalamudApiLevel": 5,
+  "LoadPriority": 0,
+  "Punchline": "Plugin for track collected mounts",
+  "Description": "A plugin allows you to track received mounts by character."
 }

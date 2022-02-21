@@ -5,6 +5,7 @@ using Dalamud.Game.Command;
 using Dalamud.IoC;
 using Dalamud.Plugin;
 using ImGuiScene;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -65,6 +66,7 @@ namespace MountCollectioner
             this.PluginUi.Dispose();
             PluginInterface.SavePluginConfig(this.Configuration);
             this.CommandManager.RemoveHandler(mainCommand);
+            GC.SuppressFinalize(this);
         }
 
         private void OnCommand(string command, string args)
@@ -85,7 +87,6 @@ namespace MountCollectioner
 
         private void IconsInit()
         {
-            icons.Add(PluginInterface.UiBuilder.LoadImage(Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, "Icons", "Argos.png")));
             icons.Add(PluginInterface.UiBuilder.LoadImage(Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, "Icons", "Y.png")));
             icons.Add(PluginInterface.UiBuilder.LoadImage(Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, "Icons", "N.png")));
         }

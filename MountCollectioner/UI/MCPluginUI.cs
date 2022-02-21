@@ -144,14 +144,14 @@ namespace MountCollectioner
                                     ImGui.SameLine();
                                     ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 5);
                                     ImGui.SetCursorPosX(ImGui.GetCursorPosX() - 5);
-                                    ImGui.Image(icons[1].ImGuiHandle, new Vector2(10, 10));
+                                    ImGui.Image(icons[0].ImGuiHandle, new Vector2(10, 10));
                                 }
                                 else
                                 {
                                     ImGui.SameLine();
                                     ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 5);
                                     ImGui.SetCursorPosX(ImGui.GetCursorPosX() - 5);
-                                    ImGui.Image(icons[2].ImGuiHandle, new Vector2(10, 10));
+                                    ImGui.Image(icons[1].ImGuiHandle, new Vector2(10, 10));
                                 }
                             }
                         }
@@ -181,14 +181,14 @@ namespace MountCollectioner
                                         ImGui.SameLine();
                                         ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 5);
                                         ImGui.SetCursorPosX(ImGui.GetCursorPosX() - 5);
-                                        ImGui.Image(icons[1].ImGuiHandle, new Vector2(10, 10));
+                                        ImGui.Image(icons[0].ImGuiHandle, new Vector2(10, 10));
                                     }
                                     else
                                     {
                                         ImGui.SameLine();
                                         ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 5);
                                         ImGui.SetCursorPosX(ImGui.GetCursorPosX() - 5);
-                                        ImGui.Image(icons[2].ImGuiHandle, new Vector2(10, 10));
+                                        ImGui.Image(icons[1].ImGuiHandle, new Vector2(10, 10));
                                     }
                                 }
                             }
