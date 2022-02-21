@@ -33,6 +33,7 @@ namespace MountCollectioner
         private CommandManager CommandManager { get; init; }
         private MCPluginConf Configuration { get; init; }
         private MCPluginUI PluginUi { get; init; }
+        private ConfigUI ConfigUI { get; init; }
 
         private List<TextureWrap> icons = new List<TextureWrap>();
 
@@ -44,11 +45,11 @@ namespace MountCollectioner
             this.CommandManager = commandManager;
 
             this.Configuration = PluginInterface.GetPluginConfig() as MCPluginConf ?? new MCPluginConf();
-            this.Configuration.Initialize(PluginInterface);
 
             IconsInit();
 
             this.PluginUi = new MCPluginUI(this.Configuration, icons);
+            this.ConfigUI = new ConfigUI(this.Configuration);
 
             this.CommandManager.AddHandler(mainCommand, new CommandInfo(OnCommand)
             {
@@ -62,6 +63,7 @@ namespace MountCollectioner
         public void Dispose()
         {
             this.PluginUi.Dispose();
+            PluginInterface.SavePluginConfig(this.Configuration);
             this.CommandManager.RemoveHandler(mainCommand);
         }
 
@@ -73,11 +75,12 @@ namespace MountCollectioner
         private void DrawUI()
         {
             this.PluginUi.Draw();
+            this.ConfigUI.Draw();
         }
 
         private void DrawConfigUI()
         {
-            this.PluginUi.Visible = !this.PluginUi.Visible;
+            this.ConfigUI.SettingsVisible = !this.ConfigUI.SettingsVisible;
         }
 
         private void IconsInit()

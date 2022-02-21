@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace MountCollectioner.Serialize
+namespace MountCollectioner.Models
 {
     public class MountObtains
     {
@@ -10,11 +10,5 @@ namespace MountCollectioner.Serialize
 
         [JsonPropertyName("text")]
         public string? Text { get; set; }
-
-        /*[JsonPropertyName("related_type")]
-        public string? RelatedType { get; set; }
-
-        [JsonPropertyName("related_id")]
-        public int RelatedId { get; set; }*/
     }
 }

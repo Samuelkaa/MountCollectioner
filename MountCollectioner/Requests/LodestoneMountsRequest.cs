@@ -1,5 +1,6 @@
-﻿using MountCollectioner.Models;
+﻿using MountCollectioner.Models.Lodestone;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
@@ -7,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace MountCollectioner.Requests
 {
-    public static class FFXIVCollectRequest
+    public static class LodestoneMountsRequest
     {
-        public static async Task<MountDataResponse> GetMountsData(uint selectedMountId, CancellationToken cancellationToken)
+        public static async Task<CharacterInformation> GetCharacterMountsData(int characterID, CancellationToken cancellationToken)
         {
-            var uriBuilder = new UriBuilder($"https://ffxivcollect.com/api/mounts/{selectedMountId}");
+            var uriBuilder = new UriBuilder($"https://ffxivcollect.com/api/characters/{characterID}?ids=1");
 
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -23,7 +24,7 @@ namespace MountCollectioner.Requests
             cancellationToken.ThrowIfCancellationRequested();
 
             var parsedRes = await JsonSerializer
-              .DeserializeAsync<MountDataResponse>(res, cancellationToken: cancellationToken)
+              .DeserializeAsync<CharacterInformation>(res, cancellationToken: cancellationToken)
               .ConfigureAwait(false);
 
             return parsedRes;

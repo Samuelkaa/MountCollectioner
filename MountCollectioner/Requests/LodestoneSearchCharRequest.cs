@@ -1,6 +1,5 @@
-﻿using MountCollectioner.Serialize.Lodestone;
+﻿using MountCollectioner.Models.Lodestone;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
@@ -8,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace MountCollectioner.Requests
 {
-    public static class LodestoneRequest
+    public static class LodestoneSearchCharRequest
     {
-        public static async Task<CharacterInformation> GetCharacterMountsData(CancellationToken cancellationToken)
+        public static async Task<LodestoneSearchResults> SearchCharacters(string characterName, string selectedWorld, CancellationToken cancellationToken)
         {
-            var uriBuilder = new UriBuilder($"https://xivapi.com/character/32983470?data=MIMO");
+            var uriBuilder = new UriBuilder($"https://xivapi.com/character/search?name={characterName}&server={selectedWorld}");
 
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -24,7 +23,7 @@ namespace MountCollectioner.Requests
             cancellationToken.ThrowIfCancellationRequested();
 
             var parsedRes = await JsonSerializer
-              .DeserializeAsync<CharacterInformation>(res, cancellationToken: cancellationToken)
+              .DeserializeAsync<LodestoneSearchResults>(res, cancellationToken: cancellationToken)
               .ConfigureAwait(false);
 
             return parsedRes;

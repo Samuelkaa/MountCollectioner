@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace MountCollectioner.Serialize
+namespace MountCollectioner.Models
 {
     public class MountDataResponse
     {

@@ -7,7 +7,6 @@ using ImGuiScene;
 using Lumina.Excel.GeneratedSheets;
 
 using MountCollectioner.Requests;
-using MountCollectioner.Serialize;
 
 using System;
 using System.Collections.Generic;
@@ -18,9 +17,9 @@ using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
 
-using NetStone;
-using Dalamud.Logging;
-using System.Timers;
+using MountCollectioner.Models;
+using MountCollectioner.Models.Lodestone;
+using System.Diagnostics;
 
 namespace MountCollectioner
 {
@@ -33,13 +32,6 @@ namespace MountCollectioner
         {
             get { return this.visible; }
             set { this.visible = value; }
-        }
-
-        private bool settingsVisible = false;
-        public bool SettingsVisible
-        {
-            get { return this.settingsVisible; }
-            set { this.settingsVisible = value; }
         }
 
         private MountDataResponse mountsDataResponse;
@@ -55,41 +47,22 @@ namespace MountCollectioner
         private List<TextureWrap> icons = new List<TextureWrap>();
 
         private ImFontPtr fontPtr;
-        private uint characterId;
 
-        private LodestoneClient lodestoneClient;
-        private string localPlayerName;
-        private string localPlayerWorld;
-
-        public bool loading;
-        private readonly System.Timers.Timer timer = new () {Interval = 1000};
-        public const int CooldownTime = 10;
-        public int CurrentCooldown = 0;
+        private CharacterInformation characterInformation;
 
 
         public MCPluginUI(MCPluginConf configuration, List<TextureWrap> icons)
         {
-            timer.Elapsed += delegate
-            {
-                CurrentCooldown -= 1;
-                if (CurrentCooldown <= 0)
-                {
-                    timer.Stop();
-                }
-            };
-
             this.configuration = configuration;
             this.icons = icons;
             mounts = MCPlugin.Data.GetExcelSheet<Mount>();
             this.sortedMounts = SortMounts();
             MCPlugin.PluginInterface.UiBuilder.BuildFonts += this.BuildFonts;
-            MCPlugin.Framework.Update += HandleCharacterInfo;
         }
 
         public void Dispose()
         {
             MCPlugin.PluginInterface.UiBuilder.BuildFonts -= this.BuildFonts;
-            MCPlugin.Framework.Update -= HandleCharacterInfo;
             GC.SuppressFinalize(this);
         }
 
@@ -124,22 +97,34 @@ namespace MountCollectioner
                 sortedMounts = SortMounts();
             }
 
+            if (configuration.SelectedCharacter != null && characterInformation == null)
+            {
+                GetCharacterMounts();
+            }
+
+            if (configuration.SelectedCharacter == null)
+            {
+                characterInformation = null;
+            }
+
             ImGui.SetNextWindowSize(new Vector2(1000, 640), ImGuiCond.FirstUseEver);
             ImGui.SetNextWindowSizeConstraints(new Vector2(800, 600), new Vector2(1920, 1080));
             if (ImGui.Begin("Mount Collectioner", ref this.visible, ImGuiWindowFlags.NoScrollbar))
             {
                 ImGui.BeginChild("leftMenu", new Vector2(ImGui.GetWindowSize().X / 3, ImGui.GetWindowSize().Y - 40), true);
 
-                ImGui.SetNextItemWidth(ImGui.GetItemRectSize().X - 15);
+                ImGui.SetNextItemWidth(ImGui.GetItemRectSize().X - 30);
                 ImGui.InputTextWithHint("", "Search mount by name", ref searchFieldString, 256);
 
                 ImGui.Separator();
 
-                if (ImGui.Checkbox("Hide collected mounts", ref this.configuration.hideCollectedMounts))
+                var hideCollectedMounts = this.configuration.HideCollectedMounts;
+                if (ImGui.Checkbox("Hide collected mounts", ref hideCollectedMounts))
                 {
-
+                    this.configuration.HideCollectedMounts = hideCollectedMounts;
                 }
-                else
+
+                if (hideCollectedMounts == false)
                 {
                     ImGui.Separator();
 
@@ -152,10 +137,61 @@ namespace MountCollectioner
                             {
                                 ChangeSelectedMount(mount.RowId);
                             }
-                            ImGui.SameLine();
-                            ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 5);
-                            ImGui.SetCursorPosX(ImGui.GetCursorPosX() - 5);
-                            ImGui.Image(icons[1].ImGuiHandle, new Vector2(10, 10));
+                            if (characterInformation != null)
+                            {
+                                if (characterInformation.ObtainedMounts.ids.Contains(mount.RowId))
+                                {
+                                    ImGui.SameLine();
+                                    ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 5);
+                                    ImGui.SetCursorPosX(ImGui.GetCursorPosX() - 5);
+                                    ImGui.Image(icons[1].ImGuiHandle, new Vector2(10, 10));
+                                }
+                                else
+                                {
+                                    ImGui.SameLine();
+                                    ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 5);
+                                    ImGui.SetCursorPosX(ImGui.GetCursorPosX() - 5);
+                                    ImGui.Image(icons[2].ImGuiHandle, new Vector2(10, 10));
+                                }
+                            }
+                        }
+                    }
+
+                    ImGui.EndChild();
+                }
+                else
+                {
+                    ImGui.Separator();
+
+                    foreach (var mount in searchSortedMounts)
+                    {
+                        if (mount.Singular != String.Empty)
+                        {
+                            if (characterInformation != null && !characterInformation.ObtainedMounts.ids.Contains(mount.RowId))
+                            {
+                                TextInfo ti = CultureInfo.CurrentCulture.TextInfo;
+                                if (ImGui.Selectable(ti.ToTitleCase(mount.Singular) + $" {mount.RowId}", selectedMount == mount))
+                                {
+                                    ChangeSelectedMount(mount.RowId);
+                                }
+                                if (characterInformation != null)
+                                {
+                                    if (characterInformation.ObtainedMounts.ids.Contains(mount.RowId))
+                                    {
+                                        ImGui.SameLine();
+                                        ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 5);
+                                        ImGui.SetCursorPosX(ImGui.GetCursorPosX() - 5);
+                                        ImGui.Image(icons[1].ImGuiHandle, new Vector2(10, 10));
+                                    }
+                                    else
+                                    {
+                                        ImGui.SameLine();
+                                        ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 5);
+                                        ImGui.SetCursorPosX(ImGui.GetCursorPosX() - 5);
+                                        ImGui.Image(icons[2].ImGuiHandle, new Vector2(10, 10));
+                                    }
+                                }
+                            }
                         }
                     }
 
@@ -203,23 +239,24 @@ namespace MountCollectioner
                     ImGui.SetCursorPosY(ImGui.GetWindowContentRegionMax().Y - 15 - ImGui.GetTextLineHeightWithSpacing());
                     if (ImGui.Button("Page on https://ffxiv.consolegameswiki.com"))
                     {
-                        
+                        try
+                        {
+                            _ = Process.Start(new ProcessStartInfo()
+                            {
+                                FileName = $"https://ffxiv.consolegameswiki.com/wiki/{selectedMount.Singular}",
+                                UseShellExecute = true,
+                            });
+                        }
+                        catch (Exception ex)
+                        {
+                             
+                        }
                     }
+                    ImGui.SetCursorPosY(ImGui.GetWindowContentRegionMax().Y + 10 - ImGui.GetTextLineHeightWithSpacing());
+                    ImGui.Text("Data provided by FFXIV Collect (https://ffxivcollect.com) and FFXIVAPI (https://xivapi.com)");
                 }
-
-                ImGui.SetCursorPosY(ImGui.GetWindowContentRegionMax().Y + 10 - ImGui.GetTextLineHeightWithSpacing());
-                ImGui.Text("Data provided by FFXIV Collect (https://ffxivcollect.com) and FFXIVAPI (https://xivapi.com)");
             }
             ImGui.End();
-        }
-
-        private void HandleCharacterInfo(Framework framework)
-        {
-            var lp = MCPlugin.ClientState.LocalPlayer;
-            if (lp == null) return;
-
-            this.localPlayerName = lp.Name.TextValue;
-            this.localPlayerWorld = lp.HomeWorld.GameData.Name;
         }
 
         private unsafe void BuildFonts()
@@ -262,17 +299,22 @@ namespace MountCollectioner
             
         }
 
-        private void GetCharacterId()
-        {
-            
-        }
-
         private void GetMount(uint selectedMountId)
         {
             Task.Run(async () =>
             {
                 this.mountsDataResponse = await FFXIVCollectRequest
                   .GetMountsData(selectedMountId, CancellationToken.None)
+                  .ConfigureAwait(false);
+            });
+        }
+
+        private void GetCharacterMounts()
+        {
+            Task.Run(async () =>
+            {
+                this.characterInformation = await LodestoneMountsRequest
+                  .GetCharacterMountsData(configuration.SelectedCharacter.ID, CancellationToken.None)
                   .ConfigureAwait(false);
             });
         }

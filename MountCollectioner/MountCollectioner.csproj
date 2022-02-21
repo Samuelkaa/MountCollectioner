@@ -3,7 +3,6 @@
   <PropertyGroup>
     <Authors></Authors>
     <Company></Company>
-    <Version>1.0.0.0</Version>
     <Description>Plugin for track collected mounts.</Description>
     <Copyright></Copyright>
     <PackageProjectUrl>https://github.com/Samuelkaa/MountCollectioner</PackageProjectUrl>

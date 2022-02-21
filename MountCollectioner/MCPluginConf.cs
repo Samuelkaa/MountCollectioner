@@ -1,5 +1,6 @@
 ﻿using Dalamud.Configuration;
 using Dalamud.Plugin;
+using MountCollectioner.Models.Lodestone;
 using System;
 
 namespace MountCollectioner
@@ -9,21 +10,12 @@ namespace MountCollectioner
     {
         public int Version { get; set; } = 1;
 
-        public bool hideCollectedMounts = false;
+        public bool CrossWorld { get; set; }
+
+        public bool HideCollectedMounts { get; set; } = false;
 
         public string CharacterId { get; set; } = String.Empty;
 
-        [NonSerialized]
-        private DalamudPluginInterface? pluginInterface;
-
-        public void Initialize(DalamudPluginInterface pluginInterface)
-        {
-            this.pluginInterface = pluginInterface;
-        }
-
-        public void Save()
-        {
-            this.pluginInterface!.SavePluginConfig(this);
-        }
+        public CharacterSelectable SelectedCharacter { get; set; }
     }
 }
