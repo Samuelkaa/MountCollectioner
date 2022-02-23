@@ -116,12 +116,16 @@ namespace MountCollectioner
                 ImGui.SetNextItemWidth(ImGui.GetItemRectSize().X - 30);
                 ImGui.InputTextWithHint("", "Search mount by name", ref searchFieldString, 256);
 
-                ImGui.Separator();
 
                 var hideCollectedMounts = this.configuration.HideCollectedMounts;
-                if (ImGui.Checkbox("Hide collected mounts", ref hideCollectedMounts))
+                if (characterInformation != null)
                 {
-                    this.configuration.HideCollectedMounts = hideCollectedMounts;
+                    ImGui.Separator();
+
+                    if (ImGui.Checkbox("Hide collected mounts", ref hideCollectedMounts))
+                    {
+                        this.configuration.HideCollectedMounts = hideCollectedMounts;
+                    }
                 }
 
                 if (hideCollectedMounts == false)
