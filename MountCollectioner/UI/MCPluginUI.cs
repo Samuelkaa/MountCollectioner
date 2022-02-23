@@ -286,7 +286,7 @@ namespace MountCollectioner
             try
             {
                 var mounts = MCPlugin.Data.GetExcelSheet<Mount>();
-                var sortMounts = mounts.Where(m => m.Singular != String.Empty).OrderBy(m => m.Singular.ToString().ToUpperInvariant());
+                var sortMounts = mounts.Where(m => m.Singular != String.Empty && m.Icon != 0).OrderBy(m => m.Singular.ToString().ToUpperInvariant());
                 var sortedMounts = new List<Mount>();
 
                 foreach (var mount in sortMounts)
