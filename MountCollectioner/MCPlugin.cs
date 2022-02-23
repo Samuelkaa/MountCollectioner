@@ -18,6 +18,8 @@ namespace MountCollectioner
 
         private const string mainCommand = "/mc";
 
+        private const string settingsCommand = "/mcsettings";
+
         [PluginService]
         internal static DalamudPluginInterface PluginInterface { get; private set; } = null!;
 
@@ -57,6 +59,11 @@ namespace MountCollectioner
                 HelpMessage = "Open plugin window"
             });
 
+            this.CommandManager.AddHandler(settingsCommand, new CommandInfo(OnSettingsCommand)
+            {
+                HelpMessage = "Open plugin settings window"
+            });
+
             PluginInterface.UiBuilder.Draw += DrawUI;
             PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
         }
@@ -72,6 +79,11 @@ namespace MountCollectioner
         private void OnCommand(string command, string args)
         {
             this.PluginUi.Visible = !this.PluginUi.Visible;
+        }
+
+        private void OnSettingsCommand(string command, string args)
+        {
+            this.ConfigUI.SettingsVisible = !this.ConfigUI.SettingsVisible;
         }
 
         private void DrawUI()
