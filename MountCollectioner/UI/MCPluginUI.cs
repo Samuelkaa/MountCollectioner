@@ -50,7 +50,6 @@ namespace MountCollectioner
 
         private CharacterInformation characterInformation;
 
-
         public MCPluginUI(MCPluginConf configuration, List<TextureWrap> icons)
         {
             this.configuration = configuration;
@@ -90,6 +89,15 @@ namespace MountCollectioner
                 }
 
                 lastSearchFieldString = this.searchFieldString;
+            }
+
+            if (characterInformation == null)
+            {
+                configuration.IsNotFound = true;
+            }
+            else
+            {
+                configuration.IsNotFound = false;
             }
 
             if (sortedMounts == null)

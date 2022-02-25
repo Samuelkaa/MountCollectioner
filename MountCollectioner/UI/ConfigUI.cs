@@ -4,6 +4,7 @@ using MountCollectioner.Models.Lodestone;
 using MountCollectioner.Requests;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Threading;
@@ -95,16 +96,55 @@ namespace MountCollectioner
             }
             else
             {
-                ImGui.SetNextWindowSize(new Vector2(200, 150), ImGuiCond.Always);
-                ImGui.SetNextWindowSizeConstraints(new Vector2(200, 150), new Vector2(200, 150));
-                if (ImGui.Begin("Character Info", ref settingsVisible, ImGuiWindowFlags.NoScrollbar))
+                if (configuration.IsNotFound == true)
                 {
-                    ImGui.Text($"{configuration.SelectedCharacter.Name}");
-                    ImGui.Text($"{configuration.SelectedCharacter.Server}");
-                    ImGui.Text($"{configuration.SelectedCharacter.ID}");
-                    if (ImGui.Button("Change character"))
+                    ImGui.SetNextWindowSize(new Vector2(300, 225), ImGuiCond.Always);
+                    ImGui.SetNextWindowSizeConstraints(new Vector2(300, 225), new Vector2(300, 225));
+                    if (ImGui.Begin("Character Info", ref settingsVisible, ImGuiWindowFlags.NoScrollbar))
                     {
-                        configuration.SelectedCharacter = null;
+                        ImGui.Text($"{configuration.SelectedCharacter.Name}");
+                        ImGui.Text($"{configuration.SelectedCharacter.Server}");
+                        ImGui.Text($"{configuration.SelectedCharacter.ID}");
+                        if (ImGui.Button("Change character"))
+                        {
+                            configuration.SelectedCharacter = null;
+                        }
+
+                        ImGui.Spacing();
+                        ImGui.Separator();
+
+                        ImGui.TextWrapped("The selected character was never tracked at");
+                        if (ImGui.Button("https://ffxivcollect.com"))
+                        {
+                            try
+                            {
+                                _ = Process.Start(new ProcessStartInfo()
+                                {
+                                    FileName = $"https://ffxivcollect.com",
+                                    UseShellExecute = true,
+                                });
+                            }
+                            catch (Exception ex)
+                            {
+
+                            }
+                        }
+                        ImGui.TextWrapped("You need to authorize once for tracking collected mounts in plugin window.");
+                    }
+                }
+                else
+                {
+                    ImGui.SetNextWindowSize(new Vector2(200, 150), ImGuiCond.Always);
+                    ImGui.SetNextWindowSizeConstraints(new Vector2(200, 150), new Vector2(200, 150));
+                    if (ImGui.Begin("Character Info", ref settingsVisible, ImGuiWindowFlags.NoScrollbar))
+                    {
+                        ImGui.Text($"{configuration.SelectedCharacter.Name}");
+                        ImGui.Text($"{configuration.SelectedCharacter.Server}");
+                        ImGui.Text($"{configuration.SelectedCharacter.ID}");
+                        if (ImGui.Button("Change character"))
+                        {
+                            configuration.SelectedCharacter = null;
+                        }
                     }
                 }
             }

@@ -14,6 +14,8 @@ namespace MountCollectioner
 
         public bool HideCollectedMounts { get; set; } = false;
 
+        public bool IsNotFound { get; set; } = false;
+
         public string CharacterId { get; set; } = String.Empty;
 
         public CharacterSelectable SelectedCharacter { get; set; }
