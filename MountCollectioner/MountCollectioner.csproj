@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Authors></Authors>
-    <Company></Company>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
     <Description>Plugin for track collected mounts.</Description>
     <Copyright></Copyright>
     <PackageProjectUrl>https://github.com/Samuelkaa/MountCollectioner</PackageProjectUrl>
@@ -39,7 +39,6 @@
 
   <ItemGroup>
     <PackageReference Include="DalamudPackager" Version="2.1.5" />
-    <PackageReference Include="NetStone" Version="1.0.0" />
     <Reference Include="FFXIVClientStructs">
       <HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>
       <Private>false</Private>
