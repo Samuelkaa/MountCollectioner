@@ -57,6 +57,7 @@ namespace MountCollectioner
             mounts = MCPlugin.Data.GetExcelSheet<Mount>();
             this.sortedMounts = SortMounts();
             MCPlugin.PluginInterface.UiBuilder.BuildFonts += this.BuildFonts;
+            MCPlugin.Framework.Update += UpdateInfo;
         }
 
         public void Dispose()
@@ -91,7 +92,7 @@ namespace MountCollectioner
                 lastSearchFieldString = this.searchFieldString;
             }
 
-            if (characterInformation == null)
+            /*if (characterInformation == null)
             {
                 configuration.IsNotFound = true;
             }
@@ -113,7 +114,7 @@ namespace MountCollectioner
             if (configuration.SelectedCharacter == null)
             {
                 characterInformation = null;
-            }
+            }*/
 
             ImGui.SetNextWindowSize(new Vector2(1000, 640), ImGuiCond.FirstUseEver);
             ImGui.SetNextWindowSizeConstraints(new Vector2(800, 600), new Vector2(1920, 1080));
@@ -269,6 +270,33 @@ namespace MountCollectioner
                 }
             }
             ImGui.End();
+        }
+
+        private void UpdateInfo(Framework framework)
+        {
+            if (characterInformation == null)
+            {
+                configuration.IsNotFound = true;
+            }
+            else
+            {
+                configuration.IsNotFound = false;
+            }
+
+            if (sortedMounts == null)
+            {
+                sortedMounts = SortMounts();
+            }
+
+            if (configuration.SelectedCharacter != null && characterInformation == null)
+            {
+                GetCharacterMounts();
+            }
+
+            if (configuration.SelectedCharacter == null)
+            {
+                characterInformation = null;
+            }
         }
 
         private unsafe void BuildFonts()
