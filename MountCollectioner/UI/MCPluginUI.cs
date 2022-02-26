@@ -92,30 +92,6 @@ namespace MountCollectioner
                 lastSearchFieldString = this.searchFieldString;
             }
 
-            /*if (characterInformation == null)
-            {
-                configuration.IsNotFound = true;
-            }
-            else
-            {
-                configuration.IsNotFound = false;
-            }
-
-            if (sortedMounts == null)
-            {
-                sortedMounts = SortMounts();
-            }
-
-            if (configuration.SelectedCharacter != null && characterInformation == null)
-            {
-                GetCharacterMounts();
-            }
-
-            if (configuration.SelectedCharacter == null)
-            {
-                characterInformation = null;
-            }*/
-
             ImGui.SetNextWindowSize(new Vector2(1000, 640), ImGuiCond.FirstUseEver);
             ImGui.SetNextWindowSizeConstraints(new Vector2(800, 600), new Vector2(1920, 1080));
             if (ImGui.Begin("Mount Collectioner", ref this.visible, ImGuiWindowFlags.NoScrollbar))
