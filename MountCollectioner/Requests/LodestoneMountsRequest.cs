@@ -1,4 +1,4 @@
-﻿using MountCollectioner.Models.Lodestone;
+using MountCollectioner.Models.Lodestone;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -10,9 +10,9 @@ namespace MountCollectioner.Requests
 {
     public static class LodestoneMountsRequest
     {
-        public static async Task<CharacterInformation> GetCharacterMountsData(int characterID, CancellationToken cancellationToken)
+        public static async Task<List<ObtainedMounts>> GetCharacterMountsData(int characterID, CancellationToken cancellationToken)
         {
-            var uriBuilder = new UriBuilder($"https://ffxivcollect.com/api/characters/{characterID}?ids=1");
+            var uriBuilder = new UriBuilder($"https://ffxivcollect.com/api/characters/{characterID}/mounts/owned");
 
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -24,10 +24,10 @@ namespace MountCollectioner.Requests
             cancellationToken.ThrowIfCancellationRequested();
 
             var parsedRes = await JsonSerializer
-              .DeserializeAsync<CharacterInformation>(res, cancellationToken: cancellationToken)
+              .DeserializeAsync<List<ObtainedMounts>>(res, cancellationToken: cancellationToken)
               .ConfigureAwait(false);
 
-            return parsedRes;
+            return parsedRes!;
         }
     }
 }

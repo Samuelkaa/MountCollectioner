@@ -1,4 +1,4 @@
-﻿using ImGuiNET;
+using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
 using MountCollectioner.Models.Lodestone;
 using MountCollectioner.Requests;
@@ -86,6 +86,7 @@ namespace MountCollectioner
                             if (ImGui.Selectable($"{character.Name}, {character.Server}, ID: {character.ID}"))
                             {
                                 configuration.SelectedCharacter = character;
+                                GetCharacterMounts();
                             }
                         }
                     }
@@ -113,7 +114,7 @@ namespace MountCollectioner
                         ImGui.Spacing();
                         ImGui.Separator();
 
-                        ImGui.TextWrapped("The selected character was never tracked at");
+                        ImGui.TextWrapped("The selected character was never tracked in");
                         if (ImGui.Button("https://ffxivcollect.com"))
                         {
                             try
@@ -173,6 +174,7 @@ namespace MountCollectioner
             }
         }
 
+
         private void SearchCharacters(string characterName, string selectedServer)
         {
             Task.Run(async () =>
@@ -180,6 +182,18 @@ namespace MountCollectioner
                 this.characterSearchResult = await LodestoneSearchCharRequest
                   .SearchCharacters(characterName, selectedServer, CancellationToken.None)
                   .ConfigureAwait(false);
+                configuration.requestsCounter += 1;
+            });
+        }
+
+        private void GetCharacterMounts()
+        {
+            Task.Run(async () =>
+            {
+                configuration.obtainedMounts = await LodestoneMountsRequest
+                  .GetCharacterMountsData(configuration.SelectedCharacter.ID, CancellationToken.None)
+                  .ConfigureAwait(false);
+                configuration.requestsCounter += 1;
             });
         }
     }

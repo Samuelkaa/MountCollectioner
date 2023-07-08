@@ -1,4 +1,4 @@
-﻿using Dalamud.Data;
+using Dalamud.Data;
 using Dalamud.Game;
 using Dalamud.Game.ClientState;
 using Dalamud.Game.Command;
@@ -99,8 +99,8 @@ namespace MountCollectioner
 
         private void IconsInit()
         {
-            icons.Add(PluginInterface.UiBuilder.LoadImage(Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, "Icons", "Y.png")));
-            icons.Add(PluginInterface.UiBuilder.LoadImage(Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, "Icons", "N.png")));
+            icons.Add(PluginInterface.UiBuilder.LoadImage(Path.Combine(PluginInterface.AssemblyLocation.DirectoryName!, "images", "Y.png")));
+            icons.Add(PluginInterface.UiBuilder.LoadImage(Path.Combine(PluginInterface.AssemblyLocation.DirectoryName!, "images", "N.png")));
         }
     }
 }

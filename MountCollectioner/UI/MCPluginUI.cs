@@ -1,4 +1,4 @@
-﻿using Dalamud.Game;
+using Dalamud.Game;
 using Dalamud.Utility;
 
 using ImGuiNET;
@@ -47,8 +47,6 @@ namespace MountCollectioner
         private List<TextureWrap> icons = new List<TextureWrap>();
 
         private ImFontPtr fontPtr;
-
-        private CharacterInformation characterInformation;
 
         public MCPluginUI(MCPluginConf configuration, List<TextureWrap> icons)
         {
@@ -103,7 +101,7 @@ namespace MountCollectioner
 
 
                 var hideCollectedMounts = this.configuration.HideCollectedMounts;
-                if (characterInformation != null)
+                if (configuration.obtainedMounts != null)
                 {
                     ImGui.Separator();
 
@@ -126,9 +124,9 @@ namespace MountCollectioner
                             {
                                 ChangeSelectedMount(mount.RowId);
                             }
-                            if (characterInformation != null)
+                            if (configuration.obtainedMounts != null)
                             {
-                                if (characterInformation.ObtainedMounts.ids.Contains(mount.RowId))
+                                if (ObtainedMountsIds().Contains(mount.RowId))
                                 {
                                     ImGui.SameLine();
                                     ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 5);
@@ -156,16 +154,17 @@ namespace MountCollectioner
                     {
                         if (mount.Singular != String.Empty)
                         {
-                            if (characterInformation != null && !characterInformation.ObtainedMounts.ids.Contains(mount.RowId))
+                            
+                            if (configuration.obtainedMounts != null && !ObtainedMountsIds().Contains(mount.RowId))
                             {
                                 TextInfo ti = CultureInfo.CurrentCulture.TextInfo;
                                 if (ImGui.Selectable(ti.ToTitleCase(mount.Singular) + $" {mount.RowId}", selectedMount == mount))
                                 {
                                     ChangeSelectedMount(mount.RowId);
                                 }
-                                if (characterInformation != null)
+                                if (configuration.obtainedMounts != null)
                                 {
-                                    if (characterInformation.ObtainedMounts.ids.Contains(mount.RowId))
+                                    if (ObtainedMountsIds().Contains(mount.RowId))
                                     {
                                         ImGui.SameLine();
                                         ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 5);
@@ -199,8 +198,8 @@ namespace MountCollectioner
                     ImGui.Text($"{mountsDataResponse.Name} {configuration.CharacterId}");
                     ImGui.PopFont();
 
-                    ImGui.SetCursorPosY(ImGui.GetCursorPosY() - 25);
-                    ImGui.Text($"{mountsDataResponse.Movement}");
+                    ImGui.SetCursorPosY(ImGui.GetCursorPosY() - 5);
+                    ImGui.Text($"Movement: {mountsDataResponse.Movement}");
 
                     ImGui.Separator();
 
@@ -223,9 +222,9 @@ namespace MountCollectioner
                     //ImGui.SetCursorPosX(ImGui.GetContentRegionMax().X / 2 - 100);
                     //ImGui.Image(MCPlugin.PluginInterface.UiBuilder.LoadImage(mountsDataResponse.Image).ImGuiHandle, new Vector2(200, 200));
 
-                    ImGui.SetCursorPosY(ImGui.GetWindowContentRegionMax().Y - 20 - ImGui.GetTextLineHeightWithSpacing());
+                    ImGui.SetCursorPosY(ImGui.GetWindowContentRegionMax().Y - 30 - ImGui.GetTextLineHeightWithSpacing());
                     ImGui.Separator();
-                    ImGui.SetCursorPosY(ImGui.GetWindowContentRegionMax().Y - 15 - ImGui.GetTextLineHeightWithSpacing());
+                    ImGui.SetCursorPosY(ImGui.GetWindowContentRegionMax().Y - 25 - ImGui.GetTextLineHeightWithSpacing());
                     if (ImGui.Button("Page on https://ffxiv.consolegameswiki.com"))
                     {
                         try
@@ -241,7 +240,7 @@ namespace MountCollectioner
                              
                         }
                     }
-                    ImGui.SetCursorPosY(ImGui.GetWindowContentRegionMax().Y + 10 - ImGui.GetTextLineHeightWithSpacing());
+                    ImGui.SetCursorPosY(ImGui.GetWindowContentRegionMax().Y - ImGui.GetTextLineHeightWithSpacing());
                     ImGui.Text("Data provided by FFXIV Collect (https://ffxivcollect.com) and FFXIVAPI (https://xivapi.com)");
                 }
             }
@@ -250,7 +249,7 @@ namespace MountCollectioner
 
         private void UpdateInfo(Framework framework)
         {
-            if (characterInformation == null)
+            if (configuration.obtainedMounts == null)
             {
                 configuration.IsNotFound = true;
             }
@@ -264,14 +263,9 @@ namespace MountCollectioner
                 sortedMounts = SortMounts();
             }
 
-            if (configuration.SelectedCharacter != null && characterInformation == null)
-            {
-                GetCharacterMounts();
-            }
-
             if (configuration.SelectedCharacter == null)
             {
-                characterInformation = null;
+                configuration.obtainedMounts = null;
             }
         }
 
@@ -291,6 +285,23 @@ namespace MountCollectioner
             this.selectedMountIcon = MCPlugin.PluginInterface.UiBuilder.LoadImageRaw(iconTexFile.GetRgbaImageData(), iconTexFile.Header.Width, iconTexFile.Header.Height, 4);
 
             GetMount(mountId);
+        }
+
+        private List<uint> ObtainedMountsIds()
+        {
+            try
+            {
+                var mounts = new List<uint>();
+                foreach (var mount in configuration.obtainedMounts)
+                {
+                    mounts.Add(mount.ObtainedMountId);
+                }
+                return mounts;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
         private List<Mount> SortMounts()
@@ -322,16 +333,7 @@ namespace MountCollectioner
                 this.mountsDataResponse = await FFXIVCollectRequest
                   .GetMountsData(selectedMountId, CancellationToken.None)
                   .ConfigureAwait(false);
-            });
-        }
-
-        private void GetCharacterMounts()
-        {
-            Task.Run(async () =>
-            {
-                this.characterInformation = await LodestoneMountsRequest
-                  .GetCharacterMountsData(configuration.SelectedCharacter.ID, CancellationToken.None)
-                  .ConfigureAwait(false);
+                configuration.requestsCounter += 1;
             });
         }
     }

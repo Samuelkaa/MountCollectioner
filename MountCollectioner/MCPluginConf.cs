@@ -1,7 +1,8 @@
-﻿using Dalamud.Configuration;
+using Dalamud.Configuration;
 using Dalamud.Plugin;
 using MountCollectioner.Models.Lodestone;
 using System;
+using System.Collections.Generic;
 
 namespace MountCollectioner
 {
@@ -17,6 +18,10 @@ namespace MountCollectioner
         public bool IsNotFound { get; set; } = false;
 
         public string CharacterId { get; set; } = String.Empty;
+
+        public int requestsCounter { get; set; } = 0;
+
+        public List<ObtainedMounts> obtainedMounts;
 
         public CharacterSelectable SelectedCharacter { get; set; }
     }
