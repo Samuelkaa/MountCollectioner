@@ -222,7 +222,7 @@ namespace MountCollectioner
                     //ImGui.SetCursorPosX(ImGui.GetContentRegionMax().X / 2 - 100);
                     //ImGui.Image(MCPlugin.PluginInterface.UiBuilder.LoadImage(mountsDataResponse.Image).ImGuiHandle, new Vector2(200, 200));
 
-                    ImGui.SetCursorPosY(ImGui.GetWindowContentRegionMax().Y - 30 - ImGui.GetTextLineHeightWithSpacing());
+                    ImGui.SetCursorPosY(ImGui.GetWindowContentRegionMax().Y - 35 - ImGui.GetTextLineHeightWithSpacing());
                     ImGui.Separator();
                     ImGui.SetCursorPosY(ImGui.GetWindowContentRegionMax().Y - 25 - ImGui.GetTextLineHeightWithSpacing());
                     if (ImGui.Button("Page on https://ffxiv.consolegameswiki.com"))
