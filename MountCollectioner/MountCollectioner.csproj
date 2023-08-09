@@ -2,7 +2,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Authors>Samuelka</Authors>
-    <Version>1.0.0.0</Version>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <Version>1.1.0.0</Version>
     <Description>Plugin for track collected mounts.</Description>
     <PackageProjectUrl>https://github.com/Samuelkaa/MountCollectioner</PackageProjectUrl>
   </PropertyGroup>
